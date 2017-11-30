@@ -2,16 +2,17 @@ import requests
 import string
 import getopt
 import sys
-hidecode='*9pqawsr1sqdaaaw'
+
+hidecode=''
+
 try:
 	options,args = getopt.getopt(sys.argv[1:],"c:C:",["code="])
 except getopt.GetoptError:
 	sys.exit()
 for name,value in options:
 	if name in ("-C","-c","--code"):
-		hidecode=value
-		print('okl')
-
+		hidecode = value
+		print('hidecode:',hidecode)
 print('hidecode len:',len(hidecode))
 decode={'*':'num','&':'character','#':'n&c'}
 decode_dic={}  #查询到特殊符号及其索引
@@ -136,10 +137,15 @@ def httprequest(invcode):
 	print(r.status_code)
 	r.encoding ='gbk'
 	#print(s.text)
-	if r.text=="<script language=\"JavaScript1.2\">parent.retmsg_invcode('1');</script>":
-		print('yes')
-	return 0
-
+	if r.status_code == 200:
+		if r.text=="<script language=\"JavaScript1.2\">parent.retmsg_invcode('1');</script>":
+			#print(r.text)
+			return 0
+		else:
+			return 1
+	else:
+		# print('connect wrong')
+		return 2	
 if symbol_count > 0:
 	combination(0)
 else:
@@ -148,17 +154,19 @@ print('possible_list len:',len(possible_list))
 
 target_string=''
 target_code=list(hidecode)
-availble_state = False
+availble_state = 0
 for x in range(possible_count):          #possible_count 默认是1
 	for x_1 in range(symbol_count):
 		target_code[decode_index_list[x_1]]=possible_list[x][x_1]
-		target_string=''.join(target_code) 
-	#print(target_string)
-	# if httprequest(target_string)==True:
-	# 	print('availble_code:',target_string)
-	# 	availble_state = True
-	# 	break
-if availble_state==False:
+	target_string=''.join(target_code) 
+	print(target_string)
+	availble_state = httprequest(target_string)
+	if availble_state == 1:
+		print('availble_code:',target_string)
+		break
+	elif availble_state == 2:
+		print('connect wrong')
+if availble_state==0:
 	print('none is availble')
 
 
