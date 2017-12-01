@@ -4,7 +4,7 @@ import getopt
 import sys
 
 hidecode=''
-
+default_timeout=20
 try:
 	options,args = getopt.getopt(sys.argv[1:],"c:C:",["code="])  #在cmd 参数不能带&
 except getopt.GetoptError:
@@ -129,7 +129,7 @@ def httprequest(invcode):
 	#   'https': '10.10.1.10:1080',
 	# }
 	# r = requests.get('http://example.org', proxies=proxies)
-	r = requests.post('http://t66y.com/register.php?',data = payload, timeout=10)
+	r = requests.post('http://t66y.com/register.php?',data = payload, timeout=default_timeout)
 	#print(payload)
 	print(r.status_code)
 	r.encoding ='gbk'
