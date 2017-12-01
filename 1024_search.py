@@ -2,11 +2,11 @@ import os
 import requests
 import re
 from bs4 import BeautifulSoup
-
+default_timeout=20
 re_invcode=re.compile(r'[0-9a-z\*\#\&]{16}')
 re_url=re.compile(r'htm_data.*?.html')  
 def find_invcode(url):
-	s = requests.get(url,timeout=10)
+	s = requests.get(url,timeout=default_timeout)
 	print(s.status_code)
 	s.encoding ='gbk'
 	# print(r.text)
@@ -27,6 +27,14 @@ def find_invcode(url):
 
 #find_invcode(url)
 def find_urlandcode():
+	invalid_url_list=[]
+	try:
+		with open('invalid_url.txt', 'r') as fr:
+		    for line in fr.readlines():
+		    	invalid_url_list.append(line.strip())
+	except IOError:
+		print('file not exist')
+	print('invalid_url_list len:',len(invalid_url_list))
 	payload = {'fid': '7', 'search': 'today','page':'1'}
 	url=r'http://t66y.com/thread0806.php'
 	page_num=1
@@ -34,7 +42,7 @@ def find_urlandcode():
 	all_url_try=0
 	find_state=0
 	while True:
-		r=requests.get(url,params=payload,timeout=10)
+		r=requests.get(url,params=payload,timeout=default_timeout)
 		print(r.url)
 		print(r.status_code)
 		linklist = re.findall(re_url, r.text)
@@ -53,13 +61,17 @@ def find_urlandcode():
 			print(url_1)
 			if find_invcode(url_1):
 				print('find',url_1)
-				find_state=1
-				if find_state==1:
+				if url_1 not in invalid_url_list:
 					console=input()
 					if console=='':
+						try:
+							with open('invalid_url.txt', 'a') as fw:
+								fw.write(url_1+'\n')
+						except IOError:
+							print('file write failed')
 						print('next')
-						find_state=0
 					else:
+						find_state=1
 						print('exit')
 						break
 		if find_state==1:
