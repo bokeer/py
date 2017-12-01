@@ -6,7 +6,7 @@ import sys
 hidecode=''
 
 try:
-	options,args = getopt.getopt(sys.argv[1:],"c:C:",["code="])
+	options,args = getopt.getopt(sys.argv[1:],"c:C:",["code="])  #在cmd 参数不能带&
 except getopt.GetoptError:
 	sys.exit()
 for name,value in options:
@@ -88,10 +88,7 @@ def combination(t):
 				possible_list.append(character_list[x])
 		elif decode_list[t]==nc_sum:
 			for x in range(decode_list[t]):
-				if x < num_sum:
-					possible_list.append(num_list[x])
-				else:
-					possible_list.append(character_list[x])
+				possible_list.append(nc_list[x])
 		else:
 			pass
 	else:
@@ -132,7 +129,7 @@ def httprequest(invcode):
 	#   'https': '10.10.1.10:1080',
 	# }
 	# r = requests.get('http://example.org', proxies=proxies)
-	r = requests.post('http://t66y.com/register.php?',data = payload)
+	r = requests.post('http://t66y.com/register.php?',data = payload, timeout=10)
 	#print(payload)
 	print(r.status_code)
 	r.encoding ='gbk'
@@ -155,18 +152,30 @@ print('possible_list len:',len(possible_list))
 target_string=''
 target_code=list(hidecode)
 availble_state = 0
-for x in range(possible_count):          #possible_count 默认是1
-	for x_1 in range(symbol_count):
-		target_code[decode_index_list[x_1]]=possible_list[x][x_1]
-	target_string=''.join(target_code) 
-	print(target_string)
-	availble_state = httprequest(target_string)
-	if availble_state == 1:
-		print('availble_code:',target_string)
-		break
-	elif availble_state == 2:
-		print('connect wrong')
-if availble_state==0:
-	print('none is availble')
+possible_try_time=0
+#开始破解验证
+def verify_code():
+	global possible_try_time  #全局变量在函数中调用时加 global
+	for x in range(possible_count):          #possible_count 默认是1
+		possible_try_time+=1
+		for x_1 in range(symbol_count):
+			target_code[decode_index_list[x_1]]=possible_list[x][x_1]
+		target_string=''.join(target_code) 
+		print(target_string)
+		availble_state = httprequest(target_string)
+		if availble_state == 1:
+			print('availble_code:',target_string)
+			break
+		elif availble_state == 2:
+			print('connect wrong')
+			availble_state = httprequest(target_string)
+			if availble_state == 1:
+				print('availble_code:',target_string)
+				break
+			elif availble_state == 2:
+				print('connect wrong x2')
+	print('possible_try_time:',possible_try_time)
+	if availble_state==0 or availble_state==2:
+		print('none is availble')
 
-
+verify_code()
