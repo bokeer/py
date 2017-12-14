@@ -3,7 +3,7 @@ import string
 import getopt
 import sys
 
-hidecode=''
+hidecode='09eb7b701c91e53X'
 default_timeout=20
 try:
 	options,args = getopt.getopt(sys.argv[1:],"c:C:",["code="])  #在cmd 参数不能带&
@@ -12,9 +12,9 @@ except getopt.GetoptError:
 for name,value in options:
 	if name in ("-C","-c","--code"):
 		hidecode = value
-		print('hidecode:',hidecode)
+print('hidecode:',hidecode)
 print('hidecode len:',len(hidecode))
-decode={'*':'num','&':'character','#':'n&c'}
+decode={'*':'num','&':'character','#':'n&c','X':'num'}
 decode_dic={}  #查询到特殊符号及其索引
 decode_list=[]  #每个特殊符号可以替换的种类
 decode_index_list=[]  #每个特殊符号的位置索引
@@ -137,6 +137,7 @@ def httprequest(invcode):
 	if r.status_code == 200:
 		if r.text=="<script language=\"JavaScript1.2\">parent.retmsg_invcode('1');</script>":
 			#print(r.text)
+			print('invalid')
 			return 0
 		else:
 			return 1
