@@ -3,7 +3,7 @@ import string
 import getopt
 import sys
 
-hidecode='09eb7b701c91e53X'
+hidecode='2*163d6934&cf7f8'
 default_timeout=20
 try:
 	options,args = getopt.getopt(sys.argv[1:],"c:C:",["code="])  #在cmd 参数不能带&

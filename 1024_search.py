@@ -3,7 +3,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 default_timeout=20
-re_invcode=re.compile(r'[0-9a-zA-Z\*\#\&]{16}')
+re_invcode=re.compile(r'[0-9a-zX\*\#\&]{16}')
 re_url=re.compile(r'htm_data.*?.html')  
 def find_invcode(url):
 	s = requests.get(url,timeout=default_timeout)
