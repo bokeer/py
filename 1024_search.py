@@ -63,6 +63,7 @@ def find_urlandcode():
 			if find_invcode(url_1):
 				print('find',url_1)
 				if url_1 not in invalid_url_list:
+					invalid_url_list.append(url_1)
 					console=input()
 					if console=='':
 						try:
