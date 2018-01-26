@@ -3,7 +3,7 @@ import string
 import getopt
 import sys
 
-hidecode='2*163d6934&cf7f8'
+hidecode='577*23854c53dad0'
 default_timeout=20
 try:
 	options,args = getopt.getopt(sys.argv[1:],"c:C:",["code="])  #在cmd 参数不能带&
@@ -129,14 +129,14 @@ def httprequest(invcode):
 	#   'https': '10.10.1.10:1080',
 	# }
 	# r = requests.get('http://example.org', proxies=proxies)
-	r = requests.post('http://t66y.com/register.php?',data = payload, timeout=default_timeout)
+	r = requests.post('https://t66y.com/register.php?',data = payload, timeout=default_timeout)
 	#print(payload)
 	print(r.status_code)
 	r.encoding ='gbk'
 	#print(s.text)
 	if r.status_code == 200:
+		#print(r.text)
 		if r.text=="<script language=\"JavaScript1.2\">parent.retmsg_invcode('1');</script>":
-			#print(r.text)
 			print('invalid')
 			return 0
 		else:
