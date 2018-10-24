@@ -1,0 +1,14 @@
+from pynput.mouse import Button,Controller
+import time
+
+mouse = Controller()
+print(mouse.position)
+mouse.position = (1085,642)
+delay_time = 6.187
+
+times = 5
+
+for x in range(0,times):
+	mouse.click(Button.left,2)
+	print(x)
+	time.sleep(1.5)
